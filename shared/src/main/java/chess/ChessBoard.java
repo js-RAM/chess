@@ -36,6 +36,10 @@ public class ChessBoard {
         return board[position.getRow()][position.getColumn()];
     }
 
+    public boolean isPiece(int posX, int posY) {
+        return board[posX][posY] != null;
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
