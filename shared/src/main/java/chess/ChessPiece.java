@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -52,11 +53,37 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         int myCol = myPosition.getColumn();
         int myRow = myPosition.getRow();
+        Collection<ChessMove> chessMoves = new HashSet<>();
         if (type == PieceType.BISHOP) {
-            for (int x = 0; x < myCol; x++) {
-                board.isPiece(x, myRow);
-            }
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1,1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1,1));
+            chessMoves.addAll(generateChessMoves(board,myPosition,1,-1));
+            chessMoves.addAll(generateChessMoves(board,myPosition,-1,-1));
         }
-        throw new RuntimeException("Not implemented");
+        if (type == PieceType.ROOK) {
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1, 0));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1, 0));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, 1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, -1));
+        }
+
+        return chessMoves;
+    }
+
+    private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
+                                                      int colRate, int rowRate) {
+        Collection<ChessMove> newChessMoves = new HashSet<>();
+        int x = chessPosition.getColumn() + colRate;
+        int y = chessPosition.getRow() + rowRate;
+        while (x > 0 && x <= 8 && y >0 && y <= 8) {
+            if (board.isPiece(x, y)) break;
+            else {
+                newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
+                System.out.println("Added Move: {" + y + "," + x + "}");
+            }
+            x += colRate;
+            y += rowRate;
+        }
+        return newChessMoves;
     }
 }
