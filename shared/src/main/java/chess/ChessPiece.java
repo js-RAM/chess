@@ -75,6 +75,16 @@ public class ChessPiece {
             chessMoves.addAll(generateChessMoves(board,myPosition,-1,-1, false));
             chessMoves.addAll(generateChessMoves(board, myPosition, -1,1, false));
         }
+        if (type == PieceType.QUEEN) {
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1,1));
+            chessMoves.addAll(generateChessMoves(board,myPosition,1,-1));
+            chessMoves.addAll(generateChessMoves(board,myPosition,-1,-1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1,1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1, 0));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1, 0));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, 1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, -1));
+        }
 
         return chessMoves;
     }
