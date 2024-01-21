@@ -85,6 +85,16 @@ public class ChessPiece {
             chessMoves.addAll(generateChessMoves(board, myPosition, 0, 1));
             chessMoves.addAll(generateChessMoves(board, myPosition, 0, -1));
         }
+        if (type == PieceType.KNIGHT) {
+            chessMoves.addAll(generateChessMoves(board, myPosition,1,2,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition,-1,2,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1,-2,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1,-2,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 2,1,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -2,1,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 2,-1,false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -2,-1,false));
+        }
 
         return chessMoves;
     }
