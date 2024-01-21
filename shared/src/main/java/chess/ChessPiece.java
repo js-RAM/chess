@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -56,9 +57,9 @@ public class ChessPiece {
         Collection<ChessMove> chessMoves = new HashSet<>();
         if (type == PieceType.BISHOP) {
             chessMoves.addAll(generateChessMoves(board, myPosition, 1,1));
-            chessMoves.addAll(generateChessMoves(board, myPosition, -1,1));
             chessMoves.addAll(generateChessMoves(board,myPosition,1,-1));
             chessMoves.addAll(generateChessMoves(board,myPosition,-1,-1));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1,1));
         }
         if (type == PieceType.ROOK) {
             chessMoves.addAll(generateChessMoves(board, myPosition, 1, 0));
@@ -76,7 +77,14 @@ public class ChessPiece {
         int x = chessPosition.getColumn() + colRate;
         int y = chessPosition.getRow() + rowRate;
         while (x > 0 && x <= 8 && y >0 && y <= 8) {
-            if (board.isPiece(x, y)) break;
+            if (board.isPiece(x, y)) {
+                if (board.getPiece(new ChessPosition(y,x)).pieceColor != this.pieceColor) {
+                    newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
+                    System.out.println("Added Move: {" + y + "," + x + "}");
+                }
+
+                break;
+            }
             else {
                 newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
                 System.out.println("Added Move: {" + y + "," + x + "}");
@@ -85,5 +93,18 @@ public class ChessPiece {
             y += rowRate;
         }
         return newChessMoves;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that=(ChessPiece) o;
+        return type == that.type && pieceColor == that.pieceColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, pieceColor);
     }
 }
