@@ -46,7 +46,27 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8];
+        ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
+        int row = 0;
+        for (int i = 0; i < 2; i++){
+            board[0][row] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+            board[1][row] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[2][row] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[5][row] = new ChessPiece(color, ChessPiece.PieceType.BISHOP);
+            board[6][row] = new ChessPiece(color, ChessPiece.PieceType.KNIGHT);
+            board[7][row] = new ChessPiece(color, ChessPiece.PieceType.ROOK);
+            row = (color == ChessGame.TeamColor.WHITE)? row+1:row-1;
+            for (int j = 0; j < 8; j++) {
+                board[j][row] = new ChessPiece(color, ChessPiece.PieceType.PAWN);
+            }
+            color = ChessGame.TeamColor.BLACK;
+            row = 7;
+        }
+        board[3][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        board[4][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        board[3][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        board[4][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
     }
 
     @Override
@@ -54,7 +74,13 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that=(ChessBoard) o;
-        return Arrays.equals(board, that.board);
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == null && that.board[i][j] == null) continue;
+                if (!board[i][j].equals(that.board[i][j])) return false;
+            }
+        }
+        return true;
     }
 
     @Override
