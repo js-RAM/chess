@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -95,8 +96,38 @@ public class ChessPiece {
             chessMoves.addAll(generateChessMoves(board, myPosition, 2,-1,false));
             chessMoves.addAll(generateChessMoves(board, myPosition, -2,-1,false));
         }
+        if (type == PieceType.PAWN) {
+            int x = myPosition.getColumn();
+            int y =myPosition.getRow();
+            int moveDist = pieceColor == ChessGame.TeamColor.WHITE?1:-1;
+            int startPos = pieceColor == ChessGame.TeamColor.WHITE?2:7;
+            if (!board.isPiece(x,y+moveDist)) {
+                chessMoves.addAll(addPromotions(board, myPosition,x,y+moveDist));
+                if(myPosition.getRow()==startPos && !board.isPiece(x,y+2*moveDist))
+                    chessMoves.addAll(addPromotions(board, myPosition,x,y+2*moveDist));
+            }
+            if (board.isPiece(x+1,y+moveDist) && board.getPiece(new ChessPosition(y+moveDist, x+1)).pieceColor != this.pieceColor) {
+                chessMoves.addAll(addPromotions(board, myPosition,x+1,y+moveDist));
+            }
+            if (board.isPiece(x-1,y+moveDist) && board.getPiece(new ChessPosition(y+moveDist, x-1)).pieceColor != this.pieceColor) {
+                chessMoves.addAll(addPromotions(board, myPosition,x-1,y+moveDist));
+            }
+        }
 
         return chessMoves;
+    }
+
+    private Collection<ChessMove> addPromotions (ChessBoard board, ChessPosition chessPosition, int newCol, int newRow) {
+        Collection<ChessMove> newChessMoves = new HashSet<>();
+        if (newRow == 1 || newRow == 8){
+            newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(newRow, newCol), PieceType.BISHOP));
+            newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(newRow, newCol), PieceType.KNIGHT));
+            newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(newRow, newCol), PieceType.QUEEN));
+            newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(newRow, newCol), PieceType.ROOK));
+        } else {
+            newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(newRow, newCol), null));
+        }
+        return newChessMoves;
     }
     private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
                                                       int colRate, int rowRate) {
@@ -138,4 +169,5 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(type, pieceColor);
     }
+
 }
