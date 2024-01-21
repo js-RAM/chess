@@ -52,8 +52,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        int myCol = myPosition.getColumn();
-        int myRow = myPosition.getRow();
         Collection<ChessMove> chessMoves = new HashSet<>();
         if (type == PieceType.BISHOP) {
             chessMoves.addAll(generateChessMoves(board, myPosition, 1,1));
@@ -67,12 +65,25 @@ public class ChessPiece {
             chessMoves.addAll(generateChessMoves(board, myPosition, 0, 1));
             chessMoves.addAll(generateChessMoves(board, myPosition, 0, -1));
         }
+        if(type == PieceType.KING) {
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1, 0, false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1, 0, false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, 1, false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 0, -1, false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, 1,1, false));
+            chessMoves.addAll(generateChessMoves(board,myPosition,1,-1, false));
+            chessMoves.addAll(generateChessMoves(board,myPosition,-1,-1, false));
+            chessMoves.addAll(generateChessMoves(board, myPosition, -1,1, false));
+        }
 
         return chessMoves;
     }
-
     private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
                                                       int colRate, int rowRate) {
+        return generateChessMoves(board,chessPosition, colRate, rowRate, true);
+    }
+    private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
+                                                      int colRate, int rowRate, boolean loop) {
         Collection<ChessMove> newChessMoves = new HashSet<>();
         int x = chessPosition.getColumn() + colRate;
         int y = chessPosition.getRow() + rowRate;
@@ -82,13 +93,13 @@ public class ChessPiece {
                     newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
                     System.out.println("Added Move: {" + y + "," + x + "}");
                 }
-
                 break;
             }
             else {
                 newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
                 System.out.println("Added Move: {" + y + "," + x + "}");
             }
+            if (!loop) break;
             x += colRate;
             y += rowRate;
         }
