@@ -106,11 +106,15 @@ public class ChessPiece {
                 if(myPosition.getRow()==startPos && !board.isPiece(x,y+2*moveDist))
                     chessMoves.addAll(addPromotions(board, myPosition,x,y+2*moveDist));
             }
-            if (board.isPiece(x+1,y+moveDist) && board.getPiece(new ChessPosition(y+moveDist, x+1)).pieceColor != this.pieceColor) {
-                chessMoves.addAll(addPromotions(board, myPosition,x+1,y+moveDist));
+            if (x < 8) {
+                if (board.isPiece(x + 1, y + moveDist) && board.getPiece(new ChessPosition(y + moveDist, x + 1)).pieceColor != this.pieceColor) {
+                    chessMoves.addAll(addPromotions(board, myPosition, x + 1, y + moveDist));
+                }
             }
-            if (board.isPiece(x-1,y+moveDist) && board.getPiece(new ChessPosition(y+moveDist, x-1)).pieceColor != this.pieceColor) {
-                chessMoves.addAll(addPromotions(board, myPosition,x-1,y+moveDist));
+            if (x > 1) {
+                if (board.isPiece(x - 1, y + moveDist) && board.getPiece(new ChessPosition(y + moveDist, x - 1)).pieceColor != this.pieceColor) {
+                    chessMoves.addAll(addPromotions(board, myPosition, x - 1, y + moveDist));
+                }
             }
         }
 
