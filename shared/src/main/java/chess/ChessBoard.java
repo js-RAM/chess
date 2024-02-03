@@ -1,8 +1,6 @@
 package chess;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -12,11 +10,13 @@ import java.util.HashSet;
  */
 public class ChessBoard {
 
-    private final int boardMin = 1;
-    private final int boardMax = 8;
+    private final int BOARD_MIN;
+    private final int BOARD_MAX;
     private ChessPiece[][] board;
     public ChessBoard() {
-        board = new ChessPiece[boardMax][boardMax];
+        BOARD_MIN= 1;
+        BOARD_MAX= 8;
+        board = new ChessPiece[BOARD_MAX][BOARD_MAX];
     }
 
     /**
@@ -26,14 +26,14 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        board[position.getColumn()-1][position.getRow()-1] =  piece;
+        board[position.getColumn() - BOARD_MIN][position.getRow() - BOARD_MIN] =  piece;
     }
 
   /**
    * Implements a move on the board
    * @param move The ChessMove to implement
    */
-  public void movePiece(ChessMove move) {
+    public void movePiece(ChessMove move) {
       addPiece(move.getEndPosition(), getPiece(move.getStartPosition()));
       removePiece(move.getStartPosition());
     }
@@ -42,8 +42,8 @@ public class ChessBoard {
    * Removes a piece at the specified position
    * @param position The ChessPosition to remove a piece at
    */
-  private void removePiece(ChessPosition position) {
-      board[position.getColumn()-1][position.getRow()-1] = null;
+    private void removePiece(ChessPosition position) {
+      board[position.getColumn() - BOARD_MIN][position.getRow() - BOARD_MIN] = null;
     }
 
     /**
@@ -54,19 +54,28 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getColumn()-1][position.getRow()-1];
+        return board[position.getColumn() - BOARD_MIN][position.getRow() - BOARD_MIN];
     }
 
   /**
-   * Returns whether a piece exists at the location on the chessboard.
-   * Parameters must be between 1 and 8, otherwise it will always return false.
+   * Returns the size of the board
    *
-   * @param col The column of the piece
-   * @param row The row of the piece
-   * @return if there is a piece there
+   * @return the size of the board as type int
    */
+    public int getBoardSize() {
+        return BOARD_MAX;
+    }
+
+    /**
+     * Returns whether a piece exists at the location on the chessboard.
+     * Parameters must be between 1 and 8, otherwise it will always return false.
+     *
+     * @param col The column of the piece
+     * @param row The row of the piece
+     * @return if there is a piece there
+     */
     public boolean isPiece(int col, int row) {
-        if (col < boardMin || col > boardMax || row < boardMin || row > boardMax) return false;
+        if (col < BOARD_MIN || col > BOARD_MAX || row < BOARD_MIN || row > BOARD_MAX) return false;
         return board[col-1][row-1] != null;
     }
 
@@ -75,7 +84,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        board = new ChessPiece[boardMax][boardMax];
+        board = new ChessPiece[BOARD_MAX][BOARD_MAX];
         ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
         int row = 0;
         for (int i = 0; i < 2; i++){
@@ -98,14 +107,23 @@ public class ChessBoard {
         board[4][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
     }
 
+    public void copyBoard(ChessBoard board) {
+        for (int i = 0; i < BOARD_MAX; i++) {
+            for (int j = 0; j < BOARD_MAX; j++) {
+                this.board[i][j] = board.board[i][j];
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that=(ChessBoard) o;
-        for (int i = 0; i < boardMax; i++) {
-            for (int j = 0; j < boardMax; j++) {
+        for (int i=0; i < BOARD_MAX; i++) {
+            for (int j=0; j < BOARD_MAX; j++) {
                 if (board[i][j] == null && that.board[i][j] == null) continue;
+                if (board[i][j] == null || that.board[i][j] == null) return false;
                 if (!board[i][j].equals(that.board[i][j])) return false;
             }
         }
