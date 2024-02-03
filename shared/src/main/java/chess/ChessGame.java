@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 
+
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -61,10 +62,18 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (gameBoard.getPiece(move.getStartPosition()) == null) throw new InvalidMoveException();
         if (gameBoard.getPiece(move.getStartPosition()).getTeamColor() != turnColor) throw new InvalidMoveException();
+        ChessBoard board = gameBoard;
+        gameBoard = new ChessBoard();
+        gameBoard.copyBoard(board);
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
         if (!validMoves.contains(move)) throw new InvalidMoveException();
         gameBoard.movePiece(move);
+        if (isInCheck(turnColor)) {
+            gameBoard = board;
+            throw new InvalidMoveException();
+        }
         turnColor = turnColor == TeamColor.WHITE?TeamColor.BLACK:TeamColor.WHITE;
     }
 
@@ -75,7 +84,26 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = new ChessPosition(1,1);
+        for (int i = 1; i < gameBoard.getBoardSize()+1; i++) {
+            for (int j = 1; j < gameBoard.getBoardSize()+1; j++) {
+                if (gameBoard.isPiece(j,i)){
+                    if (gameBoard.getPiece(new ChessPosition(i, j)).getTeamColor() == teamColor && gameBoard.getPiece(new ChessPosition(i, j)).getPieceType() == ChessPiece.PieceType.KING) {
+                        kingPosition= new ChessPosition(i, j);
+                        break;
+                    }
+                }
+            }
+        }
+        for (int i = 1; i < gameBoard.getBoardSize()+1; i++) {
+            for (int j = 1; j < gameBoard.getBoardSize()+1; j++) {
+                if (gameBoard.isPiece(j,i)) {
+                    if (gameBoard.getPiece(new ChessPosition(i, j)).pieceMoves(gameBoard, new ChessPosition(i, j)).contains(new ChessMove(new ChessPosition(i, j), kingPosition, null)))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -146,13 +146,13 @@ public class ChessPiece {
             if (board.isPiece(x, y)) {
                 if (board.getPiece(new ChessPosition(y,x)).pieceColor != this.pieceColor) {
                     newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
-                    System.out.println("Added Move: {" + y + "," + x + "}");
+                    //System.out.println("Added Move: {" + y + "," + x + "}");
                 }
                 break;
             }
             else {
                 newChessMoves.add(new ChessMove(chessPosition, new ChessPosition(y, x),null));
-                System.out.println("Added Move: {" + y + "," + x + "}");
+                //System.out.println("Added Move: {" + y + "," + x + "}");
             }
             if (!loop) break;
             x += colRate;
