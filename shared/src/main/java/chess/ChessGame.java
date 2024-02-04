@@ -82,6 +82,12 @@ public class ChessGame {
         turnColor = turnColor == TeamColor.WHITE?TeamColor.BLACK:TeamColor.WHITE;
     }
 
+    /**
+     * A helper method to find the position of the king of the requested team. Returns null if no king is found
+     *
+     * @param teamColor The color of the king to be found
+     * @return The position of the king on the given team
+     */
     private ChessPosition getKingPosition(TeamColor teamColor) {
         for (int i = 1; i < gameBoard.getBoardSize()+1; i++) {
             for (int j = 1; j < gameBoard.getBoardSize()+1; j++) {
@@ -107,7 +113,8 @@ public class ChessGame {
         for (int i = 1; i < gameBoard.getBoardSize()+1; i++) {
             for (int j = 1; j < gameBoard.getBoardSize()+1; j++) {
                 if (gameBoard.isPiece(j,i)) {
-                    if (gameBoard.getPiece(new ChessPosition(i, j)).pieceMoves(gameBoard, new ChessPosition(i, j)).contains(new ChessMove(new ChessPosition(i, j), kingPosition, null)))
+                    if (gameBoard.getPiece(new ChessPosition(i, j)).pieceMoves(gameBoard, new ChessPosition(i, j))
+                            .contains(new ChessMove(new ChessPosition(i, j), kingPosition, null)))
                         return true;
                 }
             }

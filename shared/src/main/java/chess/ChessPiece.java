@@ -121,6 +121,15 @@ public class ChessPiece {
         return chessMoves;
     }
 
+    /**
+     * Helper method to add promotions to pawn pieces
+     *
+     * @param board The board the piece is on
+     * @param chessPosition Position of the piece
+     * @param newCol The new column position of the piece
+     * @param newRow The new row position of the piece
+     * @return A collection of the possible moves of the given piece
+     */
     private Collection<ChessMove> addPromotions (ChessBoard board, ChessPosition chessPosition, int newCol, int newRow) {
         Collection<ChessMove> newChessMoves = new HashSet<>();
         if (newRow == 1 || newRow == 8){
@@ -133,10 +142,31 @@ public class ChessPiece {
         }
         return newChessMoves;
     }
+
+    /**
+     * Generates moves for a given piece on the board using a specified pattern. Loops the pattern on the default
+     *
+     * @param board The board the piece is on
+     * @param chessPosition Position of the piece
+     * @param colRate The rate of change for the column
+     * @param rowRate The rate of change for the row
+     * @return A collection of possible ChessMoves
+     */
     private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
                                                       int colRate, int rowRate) {
         return generateChessMoves(board,chessPosition, colRate, rowRate, true);
     }
+
+    /**
+     * Generates moves for a given piece on the board using a specified pattern. Loops the pattern on the default
+     *
+     * @param board The board the piece is on
+     * @param chessPosition Position of the piece
+     * @param colRate The rate of change for the column
+     * @param rowRate The rate of change for the row
+     * @param loop A boolean which determines if it loops or not
+     * @return A collection of possible ChessMoves
+     */
     private Collection<ChessMove> generateChessMoves (ChessBoard board, ChessPosition chessPosition,
                                                       int colRate, int rowRate, boolean loop) {
         Collection<ChessMove> newChessMoves = new HashSet<>();

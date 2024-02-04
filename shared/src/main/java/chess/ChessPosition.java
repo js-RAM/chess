@@ -36,12 +36,6 @@ public class ChessPosition {
         return col;
     }
 
-    public void changePosition(int rowChange, int colChange) {
-        row += rowChange;
-        col += colChange;
-
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

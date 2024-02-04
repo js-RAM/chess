@@ -108,6 +108,11 @@ public class ChessBoard {
         board[4][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
     }
 
+    /**
+     * Allows the Chessboard to copy the board from another chessboard
+     *
+     * @param board The board from which you wish to copy
+     */
     public void copyBoard(ChessBoard board) {
         for (int i = 0; i < BOARD_MAX; i++) {
             for (int j = 0; j < BOARD_MAX; j++) {
