@@ -34,7 +34,8 @@ public class ChessBoard {
    * @param move The ChessMove to implement
    */
     public void movePiece(ChessMove move) {
-      addPiece(move.getEndPosition(), getPiece(move.getStartPosition()));
+      if (move.getPromotionPiece() == null) addPiece(move.getEndPosition(), getPiece(move.getStartPosition()));
+      else addPiece(move.getEndPosition(), new ChessPiece(getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece()));
       removePiece(move.getStartPosition());
     }
 
