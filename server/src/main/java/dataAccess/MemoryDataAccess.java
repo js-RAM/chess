@@ -4,6 +4,10 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+
+/**
+ * The Memory implementaion of the data access interface
+ */
 public class MemoryDataAccess implements DataAccessInterface{
     @Override
     public UserData getUser(String username) {
