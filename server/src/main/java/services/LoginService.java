@@ -22,4 +22,12 @@ public class LoginService {
         return authData;
     }
 
+    public void logout(String authToken) throws ServerException {
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new ServerException(401, "Error: unauthorized");
+        }
+        dataAccess.deleteAuth(authData);
+    }
+
 }
