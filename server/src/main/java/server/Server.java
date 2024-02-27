@@ -1,9 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import model.AuthData;
-import model.LoginRequest;
-import model.UserData;
+import com.google.gson.JsonObject;
+import model.*;
 import services.GameMgmtService;
 import services.LoginService;
 import services.RegistrationService;
@@ -25,39 +24,13 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        RegistrationService registrationService = new RegistrationService();
-        LoginService loginService = new LoginService();
-        GameMgmtService gameMgmtService = new GameMgmtService();
-
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
-
         Spark.post("/session", this::login);
-
-//        Spark.delete("/session/:authToken", (req, res) -> {
-//            String authToken = req.params(":authToken");
-//            System.out.println(authToken);
-//            return "";
-//        });
-//
-//        Spark.get("/game/:authToken", (req, res) -> {
-//            String authToken = req.params(":authToken");
-//            return "";
-//        });
-//
-//        Spark.post("/game/:authToken/:gameName", (req, res) -> {
-//            String authToken = req.params(":authToken");
-//            String gameName = req.params(":gameName");
-//            return "";
-//        });
-//
-//        Spark.put("/game/:authToken/:ClientColor/:gameID", (req, res) -> {
-//            String authToken = req.params(":authToken");
-//            String clientColor = req.params(":ClientColor");
-//            String gameID = req.params(":gameID");
-//            return "";
-//        });
-//
+        Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::addGame);
+        Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
 
         Spark.exception(ServerException.class, this::exceptionHandler);
@@ -83,6 +56,41 @@ public class Server {
         AuthData authData = loginService.login(loginRequest);
         res.status(200);
         return new Gson().toJson(authData);
+    }
+
+    private Object logout(Request req, Response res) throws ServerException {
+        String authToken = req.headers("authorization");
+        loginService.logout(authToken);
+        res.status(200);
+        return "";
+    }
+    private Object listGames(Request req, Response res) throws ServerException {
+        String authToken = req.headers("authorization");
+        GamesList games = gameMgmtService.getGames(authToken);
+        res.status(200);
+        return new Gson().toJson(games);
+    }
+
+    private Object addGame(Request req, Response res) throws ServerException {
+        String authToken = req.headers("authorization");
+        JsonObject jsonReq = new Gson().fromJson(req.body(), JsonObject.class);
+        String gameName;
+        if (jsonReq.get("playerColor") == null)  gameName = "";
+        else gameName = jsonReq.get("playerColor").getAsString();
+        int gameID = gameMgmtService.createGame(gameName, authToken);
+        res.status(200);
+        return "{ \"gameID\": \"" + gameID + "\" }";
+    }
+
+    private Object joinGame(Request req, Response res) throws ServerException {
+        String authToken = req.headers("authorization");
+        JsonObject jsonReq = new Gson().fromJson(req.body(), JsonObject.class);
+        String playerColor;
+        if (jsonReq.get("playerColor") == null) playerColor = null;
+        else playerColor = jsonReq.get("playerColor").getAsString();
+        gameMgmtService.joinGame(authToken, playerColor, jsonReq.get("gameID").getAsInt());
+        res.status(200);
+        return "";
     }
 
     private Object clear(Request req, Response res) throws ServerException {

@@ -73,31 +73,39 @@ public class MemoryDataAccess implements DataAccessInterface{
 
     @Override
     public GameData getGame(int gameID) {
+        for (GameData gameData : gameDataArray) {
+            if (Objects.equals(gameData.gameID(), gameID))
+                return gameData;
+        }
         return null;
     }
 
     @Override
     public void addGame(GameData gameData) {
-
+        gameDataArray.add(gameData);
     }
 
     @Override
     public void updateGame(int gameID, GameData newGameData) {
-
+        for (int i = 0; i < gameDataArray.size(); i++) {
+            if (Objects.equals(gameDataArray.get(i).gameID(), gameID)) {
+                gameDataArray.set(i, newGameData);
+            }
+        }
     }
 
     @Override
     public void clearUsers() {
-
+        userDataArray = new ArrayList<>();
     }
 
     @Override
     public void clearAuth() {
-
+        authDataArray = new ArrayList<>();
     }
 
     @Override
     public void clearGames() {
-
+        gameDataArray = new ArrayList<>();
     }
 }
