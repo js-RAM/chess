@@ -1,7 +1,7 @@
 package model;
 
 /**
- * Contains Username, Password, and email
+ * Contains Username, password, and email
  */
-public record UserData() {
+public record UserData(String username, String password, String email) {
 }
