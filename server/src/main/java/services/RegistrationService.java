@@ -31,6 +31,6 @@ public class RegistrationService {
     }
 
     public boolean isValidEmail(String email) {
-        return email.matches("(.+)@(.+)\\.(.+)");
+        return email.matches("(.+)\\.(.+)");
     }
 }
