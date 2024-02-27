@@ -2,6 +2,7 @@ package services;
 
 import dataAccess.DataAccessInterface;
 import dataAccess.MemoryDataAccess;
+import exception.ServerException;
 import model.AuthData;
 import model.UserData;
 
@@ -14,23 +15,22 @@ public class RegistrationService {
         dataAccess = new MemoryDataAccess();
     }
 
-    public String register(String username, String password, String email) throws ServicesException {
-        if (isValidEmail(email)) {
-            throw new ServicesException("400");
+    public AuthData register(UserData userData) throws ServerException {
+        if (!isValidEmail(userData.email()) || userData.username() == null || userData.password() == null) {
+            throw new ServerException(400, "Error: bad request");
         }
-        if (dataAccess.getUser(username) == null) {
-            throw new ServicesException("403");
+        if (dataAccess.getUser(userData.username()) != null) {
+            throw new ServerException(403, "Error: already taken");
         }
 
-        UserData newUserData = new UserData(username, password, email);
-        dataAccess.addUser(newUserData);
-
-        String authToken = new AuthTokenGenerator().generateAuthToken();
-        dataAccess.addAuth(new AuthData(authToken, username));
-        return authToken;
+        dataAccess.addUser(userData);
+        String authToken = new AuthTokenGenerator().generateAuthToken(dataAccess);
+        AuthData authData = new AuthData(authToken, userData.username());
+        dataAccess.addAuth(authData);
+        return authData;
     }
 
     public boolean isValidEmail(String email) {
-        return email.matches("(.*)@(.*).(.*)");
+        return email.matches("(.+)@(.+)\\.(.+)");
     }
 }
