@@ -15,7 +15,9 @@ public interface DataAccessInterface {
 
     public void deleteAuth(AuthData authData);
 
-    public GameData[] getGames(int gameID);
+    public GameData[] getGames();
+
+    public GameData getGame(int gameID);
 
     public void addGame(GameData gameData);
 

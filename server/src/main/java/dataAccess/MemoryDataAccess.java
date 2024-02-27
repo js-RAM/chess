@@ -65,8 +65,15 @@ public class MemoryDataAccess implements DataAccessInterface{
     }
 
     @Override
-    public GameData[] getGames(int gameID) {
-        return new GameData[0];
+    public GameData[] getGames() {
+        GameData[] gameData = new GameData[gameDataArray.size()];
+        gameDataArray.toArray(gameData);
+        return gameData;
+    }
+
+    @Override
+    public GameData getGame(int gameID) {
+        return null;
     }
 
     @Override
