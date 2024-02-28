@@ -93,7 +93,7 @@ public class Server {
         return "";
     }
 
-    private Object clear(Request req, Response res) throws ServerException {
+    private Object clear(Request req, Response res) {
         gameMgmtService.clear();
         res.status(200);
         return "";

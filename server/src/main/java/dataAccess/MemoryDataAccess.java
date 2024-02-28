@@ -5,12 +5,11 @@ import model.GameData;
 import model.UserData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 
 /**
- * The Memory implementaion of the data access interface
+ * The Memory implementation of the data access interface
  */
 public class MemoryDataAccess implements DataAccessInterface{
     static ArrayList<UserData> userDataArray;

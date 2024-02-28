@@ -1,8 +1,6 @@
 package services;
 
 import dataAccess.DataAccessInterface;
-import model.AuthData;
-
 import java.util.Random;
 
 public class AuthTokenGenerator {

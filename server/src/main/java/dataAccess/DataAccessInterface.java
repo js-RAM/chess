@@ -3,29 +3,29 @@ package dataAccess;
 import model.*;
 
 public interface DataAccessInterface {
-    public UserData getUser(String username);
+    UserData getUser(String username);
 
-    public UserData getUser(String username, String password);
+    UserData getUser(String username, String password);
 
-    public void addUser(UserData userData);
+    void addUser(UserData userData);
 
-    public void addAuth(AuthData authData);
+    void addAuth(AuthData authData);
 
-    public AuthData getAuth(String authToken);
+    AuthData getAuth(String authToken);
 
-    public void deleteAuth(AuthData authData);
+    void deleteAuth(AuthData authData);
 
-    public GameData[] getGames();
+    GameData[] getGames();
 
-    public GameData getGame(int gameID);
+    GameData getGame(int gameID);
 
-    public void addGame(GameData gameData);
+    void addGame(GameData gameData);
 
-    public void updateGame(int gameID, GameData newGameData);
+    void updateGame(int gameID, GameData newGameData);
 
-    public void clearUsers();
+    void clearUsers();
 
-    public void clearAuth();
+    void clearAuth();
 
-    public void clearGames();
+    void clearGames();
 }

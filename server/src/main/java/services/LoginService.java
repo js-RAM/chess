@@ -5,7 +5,6 @@ import dataAccess.MemoryDataAccess;
 import exception.ServerException;
 import model.AuthData;
 import model.LoginRequest;
-import model.UserData;
 
 public class LoginService {
     DataAccessInterface dataAccess;
