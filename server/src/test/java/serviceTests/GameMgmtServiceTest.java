@@ -66,4 +66,22 @@ class GameMgmtServiceTest {
         Assertions.assertEquals(expectedData[0], gameMgmtService.getGames(authToken).games()[0]);
         Assertions.assertEquals(expectedData[1], gameMgmtService.getGames(authToken).games()[1]);
     }
+
+    @Test
+    @DisplayName("Invalid Create Test")
+    public void testInvalidCreate() {
+        Assertions.assertThrows(ServerException.class, () -> gameMgmtService.createGame("", "fakeID"));
+    }
+
+    @Test
+    @DisplayName("Invalid Join Game Test")
+    public void testInvalidJoin() {
+        Assertions.assertThrows(ServerException.class, () -> gameMgmtService.joinGame("fakeID", "WHITE", 1));
+    }
+
+    @Test
+    @DisplayName("Invalid Get Games Test")
+    public void testInvalidGetGames() {
+        Assertions.assertThrows(ServerException.class, () -> gameMgmtService.getGames("fakeID"));
+    }
 }

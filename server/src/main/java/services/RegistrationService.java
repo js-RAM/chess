@@ -5,6 +5,7 @@ import dataAccess.MemoryDataAccess;
 import exception.ServerException;
 import model.AuthData;
 import model.UserData;
+import tools.AuthTokenGenerator;
 
 /**
  * Manages the registration service

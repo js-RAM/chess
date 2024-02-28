@@ -5,6 +5,7 @@ import dataAccess.MemoryDataAccess;
 import exception.ServerException;
 import model.AuthData;
 import model.LoginRequest;
+import tools.AuthTokenGenerator;
 
 public class LoginService {
     DataAccessInterface dataAccess;

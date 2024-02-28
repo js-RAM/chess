@@ -5,7 +5,7 @@ import dataAccess.MemoryDataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import services.AuthTokenGenerator;
+import tools.AuthTokenGenerator;
 
 class AuthTokenGeneratorTest {
     @Test
