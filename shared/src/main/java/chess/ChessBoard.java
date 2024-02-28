@@ -10,12 +10,10 @@ import java.util.Arrays;
  */
 public class ChessBoard {
 
-    private final int BOARD_MIN;
-    private final int BOARD_MAX;
+    private static final int BOARD_MIN = 1;
+    private static final int BOARD_MAX = 8;
     private ChessPiece[][] board;
     public ChessBoard() {
-        BOARD_MIN= 1;
-        BOARD_MAX= 8;
         board = new ChessPiece[BOARD_MAX][BOARD_MAX];
     }
 
