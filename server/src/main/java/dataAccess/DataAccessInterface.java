@@ -1,19 +1,20 @@
 package dataAccess;
 
+import exception.ServerException;
 import model.*;
 
 public interface DataAccessInterface {
-    UserData getUser(String username);
+    UserData getUser(String username) throws ServerException;
 
-    UserData getUser(String username, String password);
+    UserData getUser(String username, String password) throws ServerException;
 
-    void addUser(UserData userData);
+    int addUser(UserData userData) throws ServerException;
 
-    void addAuth(AuthData authData);
+    void addAuth(AuthData authData) throws ServerException;
 
-    AuthData getAuth(String authToken);
+    AuthData getAuth(String authToken) throws ServerException;
 
-    void deleteAuth(AuthData authData);
+    void deleteAuth(AuthData authData) throws ServerException;
 
     GameData[] getGames();
 

@@ -40,8 +40,9 @@ public class MemoryDataAccess implements DataAccessInterface{
     }
 
     @Override
-    public void addUser(UserData userData) {
+    public int addUser(UserData userData) {
         userDataArray.add(userData);
+        return 0;
     }
 
     @Override

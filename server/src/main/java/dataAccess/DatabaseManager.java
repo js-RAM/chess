@@ -1,5 +1,7 @@
 package dataAccess;
 
+import exception.ServerException;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -36,7 +38,7 @@ public class DatabaseManager {
      */
     static void createDatabase() throws DataAccessException {
         try {
-            var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
+            var statement = "CREATE DATABASE IF NOT EXISTS chess";
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
