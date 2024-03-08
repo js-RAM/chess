@@ -17,7 +17,7 @@ class RegistrationServiceTest {
     }
 
     @AfterEach
-    public void clearDB() {
+    public void clearDB() throws ServerException {
         new GameMgmtService(new MemoryDataAccess()).clear();
     }
 

@@ -37,8 +37,7 @@ public class GameMgmtService {
         }
         int gameID = dataAccess.getGames().length+1;
         GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
-        dataAccess.addGame(newGame);
-        return gameID;
+        return dataAccess.addGame(newGame);
     }
 
     public void joinGame(String authToken, String playerColor, int gameID) throws ServerException {
@@ -63,7 +62,7 @@ public class GameMgmtService {
         dataAccess.updateGame(gameID, updatedGame);
     }
 
-    public void clear() {
+    public void clear() throws ServerException {
         dataAccess.clearGames();
         dataAccess.clearUsers();
         dataAccess.clearAuth();

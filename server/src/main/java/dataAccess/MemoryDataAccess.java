@@ -81,8 +81,9 @@ public class MemoryDataAccess implements DataAccessInterface{
     }
 
     @Override
-    public void addGame(GameData gameData) {
+    public int addGame(GameData gameData) {
         gameDataArray.add(gameData);
+        return gameData.gameID();
     }
 
     @Override

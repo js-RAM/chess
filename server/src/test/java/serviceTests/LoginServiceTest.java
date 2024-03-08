@@ -28,7 +28,7 @@ class LoginServiceTest {
     }
 
     @AfterAll
-    public static void clearDB() {
+    public static void clearDB() throws ServerException {
         new GameMgmtService(new MemoryDataAccess()).clear();
     }
 

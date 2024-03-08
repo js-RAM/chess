@@ -86,8 +86,8 @@ public class Server {
         String authToken = req.headers("authorization");
         JsonObject jsonReq = new Gson().fromJson(req.body(), JsonObject.class);
         String gameName;
-        if (jsonReq.get("playerColor") == null)  gameName = "";
-        else gameName = jsonReq.get("playerColor").getAsString();
+        if (jsonReq.get("gameName") == null)  gameName = "";
+        else gameName = jsonReq.get("gameName").getAsString();
         int gameID = gameMgmtService.createGame(gameName, authToken);
         res.status(200);
         return "{ \"gameID\": \"" + gameID + "\" }";
@@ -104,7 +104,7 @@ public class Server {
         return "";
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws ServerException {
         gameMgmtService.clear();
         res.status(200);
         return "";

@@ -30,7 +30,7 @@ class GameMgmtServiceTest {
     }
 
     @AfterEach
-    public void clearDB() {
+    public void clearDB() throws ServerException {
         gameMgmtService.clear();
     }
 

@@ -16,17 +16,17 @@ public interface DataAccessInterface {
 
     void deleteAuth(AuthData authData) throws ServerException;
 
-    GameData[] getGames();
+    GameData[] getGames() throws ServerException;
 
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws ServerException;
 
-    void addGame(GameData gameData);
+    int addGame(GameData gameData) throws ServerException;
 
-    void updateGame(int gameID, GameData newGameData);
+    void updateGame(int gameID, GameData newGameData) throws ServerException;
 
-    void clearUsers();
+    void clearUsers() throws ServerException;
 
-    void clearAuth();
+    void clearAuth() throws ServerException;
 
-    void clearGames();
+    void clearGames() throws ServerException;
 }
