@@ -20,8 +20,8 @@ class GameMgmtServiceTest {
     static String game2;
     @BeforeEach
     void init() throws ServerException {
-        registrationService = new RegistrationService();
-        gameMgmtService= new GameMgmtService();
+        registrationService = new RegistrationService(new MemoryDataAccess());
+        gameMgmtService= new GameMgmtService(new MemoryDataAccess());
         username = "ExistingUser";
         password = "secure";
         game1 = "Game1";

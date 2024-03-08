@@ -13,12 +13,12 @@ class RegistrationServiceTest {
     static RegistrationService registrationService;
     @BeforeAll
     public static void init() {
-        registrationService = new RegistrationService();
+        registrationService = new RegistrationService(new MemoryDataAccess());
     }
 
     @AfterEach
     public void clearDB() {
-        new GameMgmtService().clear();
+        new GameMgmtService(new MemoryDataAccess()).clear();
     }
 
     @Test

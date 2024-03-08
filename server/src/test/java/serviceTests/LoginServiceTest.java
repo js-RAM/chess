@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.MemoryDataAccess;
 import exception.ServerException;
 import model.AuthData;
 import model.LoginRequest;
@@ -19,8 +20,8 @@ class LoginServiceTest {
     static String authToken;
     @BeforeAll
     static void init() throws ServerException {
-        registrationService = new RegistrationService();
-        loginService = new LoginService();
+        registrationService = new RegistrationService(new MemoryDataAccess());
+        loginService = new LoginService(new MemoryDataAccess());
         username = "ExistingUser";
         password = "secure";
         authToken = registrationService.register(new UserData(username,password,"email.email")).authToken();
@@ -28,7 +29,7 @@ class LoginServiceTest {
 
     @AfterAll
     public static void clearDB() {
-        new GameMgmtService().clear();
+        new GameMgmtService(new MemoryDataAccess()).clear();
     }
 
     @Test

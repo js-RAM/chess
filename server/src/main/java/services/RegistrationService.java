@@ -12,8 +12,8 @@ import tools.AuthTokenGenerator;
  */
 public class RegistrationService {
     DataAccessInterface dataAccess;
-    public RegistrationService() {
-        dataAccess = new MemoryDataAccess();
+    public RegistrationService(DataAccessInterface dataAccess) {
+        this.dataAccess = dataAccess;
     }
 
     public AuthData register(UserData userData) throws ServerException {

@@ -2,6 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dataAccess.DataAccessInterface;
+import dataAccess.MemoryDataAccess;
+import dataAccess.SQLDataAccess;
 import model.*;
 import services.GameMgmtService;
 import services.LoginService;
@@ -14,9 +17,16 @@ public class Server {
     LoginService loginService;
     GameMgmtService gameMgmtService;
     public Server() {
-        registrationService = new RegistrationService();
-        loginService = new LoginService();
-        gameMgmtService = new GameMgmtService();
+        DataAccessInterface dataAccess;
+        try {
+            dataAccess = new SQLDataAccess();
+        } catch (ServerException e) {
+            dataAccess = new MemoryDataAccess();
+            System.out.println("Can't Connect to db, switching to using memory.\nError: " + e.getMessage());
+        }
+        registrationService = new RegistrationService(dataAccess);
+        loginService = new LoginService(dataAccess);
+        gameMgmtService = new GameMgmtService(dataAccess);
     }
 
     public int run(int desiredPort) {
@@ -40,6 +50,7 @@ public class Server {
     }
 
     private void exceptionHandler(ServerException ex, Request req, Response res) {
+        System.out.println(ex.getMessage());
         res.status(ex.getStatusCode());
         res.body("{ \"message\": \"" + ex.getMessage()+"\" }");
     }

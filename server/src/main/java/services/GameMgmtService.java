@@ -3,6 +3,7 @@ package services;
 import chess.ChessGame;
 import dataAccess.DataAccessInterface;
 import dataAccess.MemoryDataAccess;
+import dataAccess.SQLDataAccess;
 import exception.ServerException;
 import model.AuthData;
 import model.GameData;
@@ -15,8 +16,8 @@ import java.util.Objects;
  */
 public class GameMgmtService {
     DataAccessInterface dataAccess;
-    public GameMgmtService () {
-        dataAccess = new MemoryDataAccess();
+    public GameMgmtService (DataAccessInterface dataAccess) {
+        this.dataAccess = dataAccess;
     }
 
     public GamesList getGames(String authToken) throws ServerException {

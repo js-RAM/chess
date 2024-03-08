@@ -9,8 +9,8 @@ import tools.AuthTokenGenerator;
 
 public class LoginService {
     DataAccessInterface dataAccess;
-    public LoginService() {
-        dataAccess = new MemoryDataAccess();
+    public LoginService(DataAccessInterface dataAccess) {
+        this.dataAccess = dataAccess;
     }
 
     public AuthData login(LoginRequest loginRequest) throws ServerException {
