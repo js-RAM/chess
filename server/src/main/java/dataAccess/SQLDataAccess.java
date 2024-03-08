@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -91,7 +92,7 @@ public class SQLDataAccess implements DataAccessInterface {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 ps.setString(1, authData.authToken());
                 ps.setString(2, authData.username());
-                ps.execute();
+                ps.executeUpdate();
             }
         } catch (SQLException e) {
             throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
@@ -124,7 +125,7 @@ public class SQLDataAccess implements DataAccessInterface {
             var statement = "DELETE FROM AuthData WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authData.authToken());
-                ps.execute();
+                ps.executeUpdate();
             }
         } catch (Exception e) {
             throw new ServerException(500, String.format("Unable to read data: %s", e.getMessage()));
@@ -132,38 +133,129 @@ public class SQLDataAccess implements DataAccessInterface {
     }
 
     @Override
-    public GameData[] getGames() {
-        return new GameData[0];
+    public GameData[] getGames() throws ServerException {
+        var result = new ArrayList<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, gameData FROM GameData";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.add(readGame(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ServerException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
+        GameData[] gameData = new GameData[result.size()];
+        result.toArray(gameData);
+        return gameData;
     }
 
     @Override
-    public GameData getGame(int gameID) {
+    public GameData getGame(int gameID) throws ServerException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, gameData FROM GameData WHERE (id=?)";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new ServerException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
     }
 
     @Override
-    public void addGame(GameData gameData) {
+    public int addGame(GameData gameData) throws ServerException {
+        System.out.println("Adding Game: " + gameData.gameName());
+        var statement = "INSERT INTO GameData (gameData) VALUES (?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.setString(1, new Gson().toJson(gameData));
+                ps.executeUpdate();
 
+                var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+            return 0;
+        } catch (SQLException e) {
+            throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new ServerException(500, e.getMessage());
+        }
     }
 
     @Override
-    public void updateGame(int gameID, GameData newGameData) {
-
+    public void updateGame(int gameID, GameData newGameData) throws ServerException {
+        System.out.println("Updating Game: " + newGameData.gameName());
+        var statement = "UPDATE GameData SET gameData = ? WHERE id = ?;";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.setString(1, new Gson().toJson(newGameData));
+                ps.setInt(2, gameID);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new ServerException(500, e.getMessage());
+        }
     }
 
     @Override
-    public void clearUsers() {
-
+    public void clearUsers() throws ServerException {
+        var statement = "TRUNCATE TABLE UserData;";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new ServerException(500, e.getMessage());
+        }
     }
 
     @Override
-    public void clearAuth() {
-
+    public void clearAuth() throws ServerException {
+        var statement = "TRUNCATE TABLE AuthData;";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new ServerException(500, e.getMessage());
+        }
     }
 
     @Override
-    public void clearGames() {
+    public void clearGames() throws ServerException {
+        var statement = "TRUNCATE TABLE GameData;";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new ServerException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        } catch (DataAccessException e) {
+            throw new ServerException(500, e.getMessage());
+        }
+    }
 
+    private GameData readGame(ResultSet rs) throws SQLException {
+        var id = rs.getInt("id");
+        var json = rs.getString("gameData");
+        var gameData = new Gson().fromJson(json, GameData.class);
+        return gameData.setGameID(id);
     }
 
     private final String[] createStatements = {
