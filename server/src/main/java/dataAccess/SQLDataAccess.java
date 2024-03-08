@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
@@ -104,19 +105,20 @@ public class SQLDataAccess implements DataAccessInterface {
     @Override
     public AuthData getAuth(String authToken) throws ServerException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT authToken, username FROM AuthData WHERE (authToken=?)";
+            var statement = "SELECT authToken, username FROM AuthData WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
+                        if (!Objects.equals(rs.getString("authToken"), authToken)) return null;
                         return new AuthData(rs.getString("authToken"), rs.getString("username"));
                     }
+                    return null;
                 }
             }
         } catch (Exception e) {
             throw new ServerException(500, String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
     }
 
     @Override
