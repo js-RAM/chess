@@ -6,7 +6,6 @@ import exception.ServerException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import tools.AuthTokenGenerator;
 
