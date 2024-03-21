@@ -12,12 +12,10 @@ public class Client {
 
     private ServerFacade serverFacade;
     private AuthData authData;
-    private LoginRequest loginRequest;
 
     public Client(String url) {
         serverFacade = new ServerFacade(url);
         authData = null;
-        loginRequest = null;
     }
 
     public String eval(String input) {
@@ -27,8 +25,8 @@ public class Client {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
-                case "signin" -> signIn(params);
-                case "signout" -> signOut();
+                case "login" -> signIn(params);
+                case "logout" -> signOut();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -42,7 +40,6 @@ public class Client {
             String username = params[0];
             String password = params[1];
             String email = params[2];
-            loginRequest = new LoginRequest(username, password);
             authData = serverFacade.register(new UserData(username, password, email));
 
             return String.format("You signed in as %s.", username);
@@ -54,7 +51,7 @@ public class Client {
         if (params.length >= 2) {
             String username = params[0];
             String password = params[1];
-            loginRequest = new LoginRequest(username, password);
+            LoginRequest loginRequest = new LoginRequest(username, password);
             authData = serverFacade.login(loginRequest);
 
             return String.format("You signed in as %s.", username);
@@ -63,7 +60,7 @@ public class Client {
     }
 
     public String signOut() throws ServerException {
-        serverFacade.logout(loginRequest);
+        serverFacade.logout(authData.authToken());
 
         return "You signed out!";
     }
