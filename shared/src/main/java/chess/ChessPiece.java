@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 
+import static tools.EscapeSequences.*;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -198,10 +200,23 @@ public class ChessPiece {
         ChessPiece that=(ChessPiece) o;
         return type == that.type && pieceColor == that.pieceColor;
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(type, pieceColor);
     }
 
+    public String toString() {
+        String output = switch (type) {
+            case KING -> "K";
+            case QUEEN -> "Q";
+            case BISHOP -> "B";
+            case KNIGHT -> "N";
+            case ROOK -> "R";
+            case PAWN -> "P";
+        };
+        return switch (pieceColor) {
+            case WHITE -> SET_TEXT_COLOR_WHITE;
+            case BLACK -> SET_TEXT_COLOR_BLUE;
+        } + output;
+    }
 }

@@ -16,10 +16,8 @@ public class BoardRenderer {
     private final int BOARD_SIZE_IN_SQUARES = 8;
     private boolean isBackgroundBlack;
     private final String[] headers;
-    private String[] row_labels;
+    private final String[] row_labels;
     private ChessBoard chessBoard;
-    private final String X = " X ";
-    private final String O = " O ";
     private static final Random rand = new Random();
     private static  PrintStream out;
 
@@ -38,18 +36,13 @@ public class BoardRenderer {
 
     public void render(ChessBoard chessBoard, boolean reverse) {
         this.chessBoard = chessBoard;
-
         out.print(ERASE_SCREEN);
 
         drawHeaders(out);
 
-        if(reverse) {
-            setBlack(out);
-            drawBoard(out);
-        } else {
-            setBlack(out);
-            drawBoardReversed(out);
-        }
+        setBlack(out);
+        if(reverse) drawBoard(out);
+        else drawBoardReversed(out);
 
         drawHeaders(out);
 
