@@ -14,7 +14,7 @@ public class BoardRenderer {
 
     private final int BOARD_SIZE_IN_SQUARES = 8;
     private boolean isBackgroundBlack;
-    private final String[] headers;
+    private String[] headers;
     private final String[] row_labels;
     private ChessBoard chessBoard;
     private static  PrintStream out;
@@ -35,7 +35,9 @@ public class BoardRenderer {
     public void render(ChessBoard chessBoard, boolean reverse) {
         this.chessBoard = chessBoard;
         out.print(ERASE_SCREEN);
-
+        if (reverse) {
+            headers = new String[]{" ", "h", "g", "f", "e", "d", "c", "b", "a", " "};
+        }
         drawHeaders(out);
 
         setBlack(out);
@@ -95,7 +97,7 @@ public class BoardRenderer {
 
     private void drawBoardReversed(PrintStream out) {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
-            if(boardRow % 2 == 1) if(isBackgroundBlack) setWhite(out); else setBlack(out);
+            if(boardRow % 2 == 0) if(isBackgroundBlack) setWhite(out); else setBlack(out);
             printColumnHeader(out, row_labels[7-boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
