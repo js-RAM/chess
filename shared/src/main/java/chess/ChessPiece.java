@@ -2,10 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
-
-import static tools.EscapeSequences.*;
 
 /**
  * Represents a single chess piece
@@ -215,8 +212,8 @@ public class ChessPiece {
             case PAWN -> "P";
         };
         return switch (pieceColor) {
-            case WHITE -> SET_TEXT_COLOR_WHITE;
-            case BLACK -> SET_TEXT_COLOR_BLUE;
+            case WHITE -> "\u001b[38;5;15m";
+            case BLACK -> "\u001b[38;5;12m";
         } + output;
     }
 }

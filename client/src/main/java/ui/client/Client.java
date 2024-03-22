@@ -6,7 +6,7 @@ import java.util.Arrays;
 import model.*;
 import server.ServerFacade;
 
-import static tools.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 
 public class Client implements ClientInterface {
 

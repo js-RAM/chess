@@ -8,7 +8,7 @@ import ui.client.VerifiedClient;
 
 import java.util.Scanner;
 
-import static tools.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 
 public class Repl {
 

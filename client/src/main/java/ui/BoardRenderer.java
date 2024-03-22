@@ -6,10 +6,9 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Random;
 
-import static tools.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 
 public class BoardRenderer {
 
@@ -18,7 +17,6 @@ public class BoardRenderer {
     private final String[] headers;
     private final String[] row_labels;
     private ChessBoard chessBoard;
-    private static final Random rand = new Random();
     private static  PrintStream out;
 
 
@@ -84,7 +82,7 @@ public class BoardRenderer {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(boardRow+1, 8-boardCol));
-                if (piece != null) printPlayer(out, " " + piece.toString() + " ");
+                if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
             }
             printColumnHeader(out, row_labels[boardRow]);
@@ -102,7 +100,7 @@ public class BoardRenderer {
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(8-boardRow, boardCol+1));
-                if (piece != null) printPlayer(out, " " + piece.toString() + " ");
+                if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
             }
             printColumnHeader(out, row_labels[boardRow]);

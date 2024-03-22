@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import static tools.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 
 public class VerifiedClient implements ClientInterface {
     private final ServerFacade serverFacade;
