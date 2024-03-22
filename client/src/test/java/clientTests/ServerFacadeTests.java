@@ -103,4 +103,15 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ServerException.class, () -> serverFacade.joinGame("not_a_token", new JoinRequest(0,"")));
     }
 
+    @Test
+    public void clearTest() throws ServerException {
+        serverFacade.register(new UserData("username", "password", "email.e"));
+        serverFacade.clear();
+        Assertions.assertThrows(ServerException.class, () -> serverFacade.login(new LoginRequest("username", "password")));
+    }
+
+    @Test
+    public void clearClearTest() throws ServerException {
+        Assertions.assertDoesNotThrow(() -> serverFacade.clear());
+    }
 }
