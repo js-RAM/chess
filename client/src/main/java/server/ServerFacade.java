@@ -29,18 +29,23 @@ public class ServerFacade {
     }
 
     public GamesList listGames(String authToken) throws ServerException {
-        var path = "/game/"+authToken;
-        return this.makeRequest("GET", path, null, GamesList.class);
+        var path = "/game";
+        return this.makeRequest("GET", path, null, authToken, GamesList.class);
     }
 
-    public String addGame(String authToken, String gameName) throws ServerException {
-        var path = "/game/"+authToken;
-        return this.makeRequest("POST", path, "{ \"GameName\": \"" + gameName + "\" }", null);
+    public void addGame(String authToken, String gameName) throws ServerException {
+        var path = "/game";
+        this.makeRequest("POST", path, new NewGameRequest(gameName), authToken, null);
     }
 
-    public void joinGame(String authToken, String gameID, String playerColor) throws ServerException {
-        var path = "/game/"+authToken;
-        this.makeRequest("PUT", path, "{ \"gameID\": \"" + gameID + "\", \"playerColor\": \"" + playerColor + "\" }", null);
+    public void joinGame(String authToken, JoinRequest joinRequest) throws ServerException {
+        var path = "/game";
+        this.makeRequest("PUT", path, joinRequest, authToken, null);
+    }
+
+    public void clear() throws ServerException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ServerException {
@@ -76,7 +81,8 @@ public class ServerFacade {
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ServerException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            throw new ServerException(status, "failure: " + status);
+            String error = http.getResponseMessage();
+            throw new ServerException(status, "failure: " + error);
         }
     }
 
