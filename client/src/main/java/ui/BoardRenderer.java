@@ -79,7 +79,7 @@ public class BoardRenderer {
 
     private void drawBoard(PrintStream out) {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
-            if(boardRow % 2 == 0) if(isBackgroundBlack) setWhite(out); else setBlack(out);
+            if(boardRow % 2 == 1) if(isBackgroundBlack) setWhite(out); else setBlack(out);
             printColumnHeader(out, row_labels[boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
@@ -97,7 +97,7 @@ public class BoardRenderer {
 
     private void drawBoardReversed(PrintStream out) {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
-            if(boardRow % 2 == 0) if(isBackgroundBlack) setWhite(out); else setBlack(out);
+            if(boardRow % 2 == 1) if(isBackgroundBlack) setWhite(out); else setBlack(out);
             printColumnHeader(out, row_labels[7-boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
@@ -105,7 +105,7 @@ public class BoardRenderer {
                 if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
             }
-            printColumnHeader(out, row_labels[boardRow]);
+            printColumnHeader(out, row_labels[7-boardRow]);
             out.println(RESET_BG_COLOR);
             if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
                 setBlack(out);
