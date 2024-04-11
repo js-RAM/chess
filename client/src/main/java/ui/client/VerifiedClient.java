@@ -5,6 +5,9 @@ import exception.ServerException;
 import model.*;
 import server.ServerFacade;
 import ui.BoardRenderer;
+import webSocketMessages.userCommands.UserGameCommand;
+import websocket.ServerMessageHandler;
+import websocket.WebsocketFacade;
 
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -17,13 +20,18 @@ public class VerifiedClient implements ClientInterface {
     private final String authToken;
     private LoginState loginStatus;
     private final Dictionary<Integer, Integer> gameIDs;
+    private final String url;
+    private WebsocketFacade ws;
+    private ServerMessageHandler serverMessageHandler;
 
 
-    public VerifiedClient(String url, String authToken) {
+    public VerifiedClient(String url, String authToken, ServerMessageHandler serverMessageHandler) {
         serverFacade = new ServerFacade(url);
+        this.url = url;
         this.authToken = authToken;
         gameIDs = new Hashtable<>();
         loginStatus = LoginState.LOGGED_IN;
+        this.serverMessageHandler = serverMessageHandler;
     }
     @Override
     public ClientResponse eval(String input) {
@@ -49,6 +57,7 @@ public class VerifiedClient implements ClientInterface {
     public String signOut() throws ServerException {
         serverFacade.logout(authToken);
         loginStatus = LoginState.LOGGED_OUT;
+
         return "You signed out!";
     }
 
@@ -74,6 +83,8 @@ public class VerifiedClient implements ClientInterface {
             String playerColor = "";
             if (params.length >= 2) playerColor = params[1].toUpperCase();
             serverFacade.joinGame(authToken,new JoinRequest(gameID,playerColor));
+            ws = new WebsocketFacade(url, serverMessageHandler);
+            ws.sendCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER);
             BoardRenderer boardRenderer = new BoardRenderer();
             ChessBoard chessBoard = new ChessBoard();
             chessBoard.resetBoard();
