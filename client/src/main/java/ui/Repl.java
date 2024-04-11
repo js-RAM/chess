@@ -5,12 +5,14 @@ import model.LoginState;
 import ui.client.Client;
 import ui.client.ClientInterface;
 import ui.client.VerifiedClient;
+import webSocketMessages.serverMessages.ServerMessage;
+import websocket.ServerMessageHandler;
 
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
-public class Repl {
+public class Repl implements ServerMessageHandler {
 
     String url;
     private ClientInterface client;
@@ -36,7 +38,7 @@ public class Repl {
                 result = response.message();
                 if (status != response.loginStatus()) {
                     status = response.loginStatus();
-                    if (status == LoginState.LOGGED_IN) client = new VerifiedClient(url, response.authToken());
+                    if (status == LoginState.LOGGED_IN) client = new VerifiedClient(url, response.authToken(), this);
                     else client = new Client(url);
                 }
                 System.out.print(SET_TEXT_COLOR_BLUE + result);
@@ -48,6 +50,11 @@ public class Repl {
         System.out.println();
     }
 
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        System.out.println(SET_TEXT_COLOR_RED + serverMessage.getServerMessageType());
+        printPrompt();
+    }
     private void printPrompt() {
         System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[" + status + "] " + ">>> " + SET_TEXT_COLOR_GREEN);
     }
