@@ -1,11 +1,13 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Random;
 
 import static ui.EscapeSequences.*;
@@ -19,6 +21,8 @@ public class BoardRenderer {
     private ChessBoard chessBoard;
     private static  PrintStream out;
 
+    private int[][] validMoves;
+
 
     public BoardRenderer() {
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -26,10 +30,21 @@ public class BoardRenderer {
         row_labels = new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
         isBackgroundBlack = false;
         chessBoard = new ChessBoard();
+        validMoves = new int[8][8];
     }
 
     public void render(ChessBoard chessBoard) {
         render(chessBoard,false);
+    }
+
+    public void setValidMoves(Collection<ChessMove> chessMoves) {
+        validMoves = new int[8][8];
+        for (ChessMove move : chessMoves) {
+            ChessPosition startPosition = move.getStartPosition();
+            validMoves[startPosition.getRow()-1][startPosition.getColumn()-1] = 2;
+            ChessPosition position = move.getEndPosition();
+            validMoves[position.getRow()-1][position.getColumn()-1] = 1;
+        }
     }
 
     public void render(ChessBoard chessBoard, boolean reverse) {
@@ -83,6 +98,8 @@ public class BoardRenderer {
             printColumnHeader(out, row_labels[boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
+                if (validMoves[boardRow][7-boardCol] == 1) out.print(SET_BG_COLOR_GREEN);
+                if (validMoves[boardRow][7-boardCol] == 2) out.print(SET_BG_COLOR_YELLOW);
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(boardRow+1, 8-boardCol));
                 if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
@@ -101,6 +118,8 @@ public class BoardRenderer {
             printColumnHeader(out, row_labels[7-boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
+                if (validMoves[7-boardRow][boardCol] == 1) out.print(SET_BG_COLOR_GREEN);
+                if (validMoves[7-boardRow][boardCol] == 2) out.print(SET_BG_COLOR_YELLOW);
                 ChessPiece piece = chessBoard.getPiece(new ChessPosition(8-boardRow, boardCol+1));
                 if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
