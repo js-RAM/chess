@@ -4,6 +4,7 @@ import model.ClientResponse;
 import model.LoginState;
 import ui.client.Client;
 import ui.client.ClientInterface;
+import ui.client.GameClient;
 import ui.client.VerifiedClient;
 import webSocketMessages.serverMessages.ServerMessage;
 import websocket.ServerMessageHandler;
@@ -39,6 +40,7 @@ public class Repl implements ServerMessageHandler {
                 if (status != response.loginStatus()) {
                     status = response.loginStatus();
                     if (status == LoginState.LOGGED_IN) client = new VerifiedClient(url, response.authToken(), this);
+                    else if (status == LoginState.IN_GAME) client = new GameClient(response.authToken(), response.ws());
                     else client = new Client(url);
                 }
                 System.out.print(SET_TEXT_COLOR_BLUE + result);

@@ -1,6 +1,7 @@
 package ui.client;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import exception.ServerException;
 import model.*;
 import server.ServerFacade;
@@ -20,18 +21,18 @@ public class VerifiedClient implements ClientInterface {
     private final String authToken;
     private LoginState loginStatus;
     private final Dictionary<Integer, Integer> gameIDs;
-    private final String url;
+
     private WebsocketFacade ws;
-    private ServerMessageHandler serverMessageHandler;
+    private final String url;
+    private final ServerMessageHandler handler;
 
-
-    public VerifiedClient(String url, String authToken, ServerMessageHandler serverMessageHandler) {
+    public VerifiedClient(String url, String authToken, ServerMessageHandler handler) {
         serverFacade = new ServerFacade(url);
-        this.url = url;
         this.authToken = authToken;
+        this.url = url;
+        this.handler = handler;
         gameIDs = new Hashtable<>();
         loginStatus = LoginState.LOGGED_IN;
-        this.serverMessageHandler = serverMessageHandler;
     }
     @Override
     public ClientResponse eval(String input) {
@@ -48,9 +49,9 @@ public class VerifiedClient implements ClientInterface {
                 case "quit" -> "quit";
                 default -> help();
             };
-            return new ClientResponse(loginStatus, output, authToken);
+            return new ClientResponse(loginStatus, output, authToken, ws);
         } catch (ServerException ex) {
-            return new ClientResponse(loginStatus, ex.getMessage(), authToken);
+            return new ClientResponse(loginStatus, ex.getMessage(), authToken, null);
         }
     }
 
@@ -83,13 +84,8 @@ public class VerifiedClient implements ClientInterface {
             String playerColor = "";
             if (params.length >= 2) playerColor = params[1].toUpperCase();
             serverFacade.joinGame(authToken,new JoinRequest(gameID,playerColor));
-            ws = new WebsocketFacade(url, serverMessageHandler);
-            ws.sendCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER);
-            BoardRenderer boardRenderer = new BoardRenderer();
-            ChessBoard chessBoard = new ChessBoard();
-            chessBoard.resetBoard();
-            boardRenderer.render(chessBoard);
-            boardRenderer.render(chessBoard, true);
+            loginStatus = LoginState.IN_GAME;
+            ws = new WebsocketFacade(url, handler, new PlayerInfo(gameID, ChessGame.TeamColor.valueOf(playerColor)));
             return "Joined Game";
         }
         throw new ServerException(400, "Expected: <gameID> <playerColor>");

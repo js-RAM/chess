@@ -33,9 +33,9 @@ public class Client implements ClientInterface {
                 case "quit" -> "quit";
                 default -> help();
             };
-            return new ClientResponse(loginStatus, output, authToken);
+            return new ClientResponse(loginStatus, output, authToken, null);
         } catch (ServerException ex) {
-            return new ClientResponse(loginStatus, ex.getMessage(), authToken);
+            return new ClientResponse(loginStatus, ex.getMessage(), authToken, null);
         }
     }
 
