@@ -16,9 +16,13 @@ public class ChessGame {
     TeamColor turnColor;
     ChessBoard gameBoard;
 
+    public Boolean isOver;
+
     public ChessGame() {
         turnColor = TeamColor.WHITE;
         gameBoard = new ChessBoard();
+        gameBoard.resetBoard();
+        isOver = false;
     }
 
     /**
@@ -149,7 +153,8 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         if (isInCheck(teamColor)) return false;
-        return validMoves(getKingPosition(teamColor)).isEmpty();
+        if (isInCheckmate(teamColor)) return validMoves(getKingPosition(teamColor)).isEmpty();
+        return false;
     }
 
     /**
