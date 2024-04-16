@@ -85,7 +85,9 @@ public class VerifiedClient implements ClientInterface {
             if (params.length >= 2) playerColor = params[1].toUpperCase();
             serverFacade.joinGame(authToken,new JoinRequest(gameID,playerColor));
             loginStatus = LoginState.IN_GAME;
-            ws = new WebsocketFacade(url, handler, new PlayerInfo(gameID, ChessGame.TeamColor.valueOf(playerColor)));
+            ws = new WebsocketFacade(url, handler, new PlayerInfo(gameID, playerColor.isEmpty() ? null : ChessGame.TeamColor.valueOf(playerColor)));
+            if (playerColor.isEmpty()) ws.joinAsObserver(authToken);
+            else ws.joinAsPlayer(ChessGame.TeamColor.valueOf(playerColor), authToken);
             return "Joined Game";
         }
         throw new ServerException(400, "Expected: <gameID> <playerColor>");

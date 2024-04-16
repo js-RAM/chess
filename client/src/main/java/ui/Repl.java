@@ -2,10 +2,12 @@ package ui;
 
 import model.ClientResponse;
 import model.LoginState;
+import model.PlayerInfo;
 import ui.client.Client;
 import ui.client.ClientInterface;
 import ui.client.GameClient;
 import ui.client.VerifiedClient;
+import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import websocket.ServerMessageHandler;
 
@@ -37,6 +39,7 @@ public class Repl implements ServerMessageHandler {
             try {
                 ClientResponse response = client.eval(line);
                 result = response.message();
+                if (result == null) result = "";
                 if (status != response.loginStatus()) {
                     status = response.loginStatus();
                     if (status == LoginState.LOGGED_IN) client = new VerifiedClient(url, response.authToken(), this);
@@ -54,7 +57,13 @@ public class Repl implements ServerMessageHandler {
 
     @Override
     public void notify(ServerMessage serverMessage) {
-        System.out.println(SET_TEXT_COLOR_RED + serverMessage.getServerMessageType());
+        System.out.println(SET_TEXT_COLOR_RED + serverMessage.getMessage());
+        printPrompt();
+    }
+
+    public void printGameBoard(LoadGameMessage loadGameMessage, boolean isBlack) {
+        System.out.println();
+        new BoardRenderer().render(loadGameMessage.getGame().getBoard(), isBlack);
         printPrompt();
     }
     private void printPrompt() {

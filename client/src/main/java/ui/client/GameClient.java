@@ -25,10 +25,10 @@ public class GameClient implements ClientInterface {
     private WebsocketFacade ws;
 
 
-    public GameClient(String authToken, WebsocketFacade ws) throws ServerException {
+    public GameClient(String authToken, WebsocketFacade ws) {
         this.ws = ws;
         this.authToken = authToken;
-        loginStatus = LoginState.LOGGED_IN;
+        loginStatus = LoginState.IN_GAME;
     }
     @Override
     public ClientResponse eval(String input) {
@@ -54,8 +54,8 @@ public class GameClient implements ClientInterface {
         if (params.length >= 2) {
             String startPosition = params[0];
             String endPosition = params[1];
-            String promote = (params.length >= 3) ? params[2] : "";
-            ChessPiece.PieceType promotion = ChessPiece.PieceType.valueOf(promote);
+            String promote = (params.length >= 3) ? params[2] : null;
+            ChessPiece.PieceType promotion = promote == null ? null : ChessPiece.PieceType.valueOf(promote);
             ChessMove move = new ChessMove(turnCoordinatesToPosition(startPosition),
                     turnCoordinatesToPosition(endPosition), promotion);
             ws.makeMove(move, authToken);
@@ -66,18 +66,8 @@ public class GameClient implements ClientInterface {
 
     private ChessPosition turnCoordinatesToPosition(String position) throws ServerException {
         char[] coordinates = position.toCharArray();
-        int col = switch (coordinates[0]) {
-            case 'a' -> 1;
-            case 'b' -> 2;
-            case 'c' -> 3;
-            case 'd' -> 4;
-            case 'e' -> 5;
-            case 'f' -> 6;
-            case 'g' -> 7;
-            case 'h' -> 8;
-            default -> throw new ServerException(400, "Unexpected value: " + coordinates[0]);
-        };
-        return new ChessPosition(coordinates[1], col);
+
+        return new ChessPosition(coordinates[1]-48, coordinates[0]-96);
     }
 
     public String highlightMoves(String... params) throws ServerException {
@@ -103,7 +93,9 @@ public class GameClient implements ClientInterface {
     }
 
     public String leave() throws ServerException {
-        return "";
+        ws.leave(authToken);
+        loginStatus = LoginState.LOGGED_IN;
+        return "You left";
     }
 
     @Override

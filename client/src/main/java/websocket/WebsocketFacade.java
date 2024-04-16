@@ -5,7 +5,9 @@ import chess.ChessMove;
 import com.google.gson.Gson;
 import exception.ServerException;
 import model.PlayerInfo;
+import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
+import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
 
@@ -36,10 +38,17 @@ public class WebsocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                    if (serverMessage instanceof LoadGameMessage) {
+                    if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
+                        serverMessage = new Gson().fromJson(message, LoadGameMessage.class);
                         game = ((LoadGameMessage) serverMessage).getGame();
+                        serverMessageHandler.printGameBoard((LoadGameMessage) serverMessage, playerInfo.color() == ChessGame.TeamColor.BLACK);
+                    } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
+                        serverMessage = new Gson().fromJson(message, Notification.class);
+                        serverMessageHandler.notify(serverMessage);
+                    } else {
+                        serverMessage = new Gson().fromJson(message, ErrorMessage.class);
+                        serverMessageHandler.notify(serverMessage);
                     }
-                    serverMessageHandler.notify(serverMessage);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -64,9 +73,9 @@ public class WebsocketFacade extends Endpoint {
         }
     }
 
-    public void joinAsObserver(int gameID, String authToken) throws ServerException {
+    public void joinAsObserver(String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new JoinObserverCommand(gameID, authToken);
+            UserGameCommand cmd = new JoinObserverCommand(playerInfo.gameID(), authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         } catch (IOException ex) {
             throw new ServerException(500, ex.getMessage());
