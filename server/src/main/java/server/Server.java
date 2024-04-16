@@ -29,7 +29,12 @@ public class Server {
         registrationService = new RegistrationService(dataAccess);
         loginService = new LoginService(dataAccess);
         gameMgmtService = new GameMgmtService(dataAccess);
-        webSocketHandler = new WebSocketHandler();
+        try {
+            webSocketHandler = new WebSocketHandler();
+        } catch (ServerException e) {
+            System.out.print("Unable to create websocket handler");
+        }
+
     }
 
     public int run(int desiredPort) {
