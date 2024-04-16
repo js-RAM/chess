@@ -8,16 +8,15 @@ import chess.ChessPosition;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import java.util.Random;
 
 import static ui.EscapeSequences.*;
 
 public class BoardRenderer {
 
-    private final int BOARD_SIZE_IN_SQUARES = 8;
+    private static final int BOARD_SIZE_IN_SQUARES = 8;
     private boolean isBackgroundBlack;
     private String[] headers;
-    private final String[] row_labels;
+    private final String[] rowLabels;
     private ChessBoard chessBoard;
     private static  PrintStream out;
 
@@ -27,7 +26,7 @@ public class BoardRenderer {
     public BoardRenderer() {
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         headers = new String[]{" ", "a", "b", "c", "d", "e", "f", "g", "h", " "};
-        row_labels = new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
+        rowLabels= new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
         isBackgroundBlack = false;
         chessBoard = new ChessBoard();
         validMoves = new int[8][8];
@@ -95,7 +94,7 @@ public class BoardRenderer {
     private void drawBoard(PrintStream out) {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
             if(boardRow % 2 == 1) if(isBackgroundBlack) setWhite(out); else setBlack(out);
-            printColumnHeader(out, row_labels[boardRow]);
+            printColumnHeader(out, rowLabels[boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
                 if (validMoves[boardRow][7-boardCol] == 1) out.print(SET_BG_COLOR_GREEN);
@@ -104,7 +103,7 @@ public class BoardRenderer {
                 if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
             }
-            printColumnHeader(out, row_labels[boardRow]);
+            printColumnHeader(out, rowLabels[boardRow]);
             out.println(RESET_BG_COLOR);
             if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
                 setBlack(out);
@@ -115,7 +114,7 @@ public class BoardRenderer {
     private void drawBoardReversed(PrintStream out) {
         for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
             if(boardRow % 2 == 1) if(isBackgroundBlack) setWhite(out); else setBlack(out);
-            printColumnHeader(out, row_labels[7-boardRow]);
+            printColumnHeader(out, rowLabels[7-boardRow]);
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 if(isBackgroundBlack) setWhite(out); else setBlack(out);
                 if (validMoves[7-boardRow][boardCol] == 1) out.print(SET_BG_COLOR_GREEN);
@@ -124,7 +123,7 @@ public class BoardRenderer {
                 if (piece != null) printPlayer(out, " " + piece + " ");
                 else printPlayer(out, "   ");
             }
-            printColumnHeader(out, row_labels[7-boardRow]);
+            printColumnHeader(out, rowLabels[7-boardRow]);
             out.println(RESET_BG_COLOR);
             if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
                 setBlack(out);
@@ -136,12 +135,6 @@ public class BoardRenderer {
         isBackgroundBlack = false;
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-    private void setRed(PrintStream out) {
-        isBackgroundBlack = false;
-        out.print(SET_BG_COLOR_RED);
-        out.print(SET_TEXT_COLOR_RED);
     }
 
     private void setBlack(PrintStream out) {

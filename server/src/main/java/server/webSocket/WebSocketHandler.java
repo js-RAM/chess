@@ -40,11 +40,6 @@ public class WebSocketHandler {
         }
     }
 
-    public void test(Session session) {
-        addGameConnection(1);
-        gameConnections.get(1).add("5", session, ChessGame.TeamColor.WHITE);
-    }
-
     public void joinPlayer(Session session, JoinPlayerCommand joinPlayerCommand) throws ServerException, IOException {
         addGameConnection(joinPlayerCommand.getGameID());
         GameData gameData = dataAccess.getGame(joinPlayerCommand.getGameID());

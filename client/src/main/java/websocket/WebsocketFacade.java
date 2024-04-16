@@ -66,7 +66,7 @@ public class WebsocketFacade extends Endpoint {
 
     public void joinAsPlayer(ChessGame.TeamColor color, String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new JoinPlayerCommand(playerInfo.gameID(), color, authToken);
+            JoinPlayerCommand cmd = new JoinPlayerCommand(playerInfo.gameID(), color, authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         } catch (IOException ex) {
             throw new ServerException(500, ex.getMessage());
@@ -75,7 +75,7 @@ public class WebsocketFacade extends Endpoint {
 
     public void joinAsObserver(String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new JoinObserverCommand(playerInfo.gameID(), authToken);
+            JoinObserverCommand cmd = new JoinObserverCommand(playerInfo.gameID(), authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         } catch (IOException ex) {
             throw new ServerException(500, ex.getMessage());
@@ -84,7 +84,7 @@ public class WebsocketFacade extends Endpoint {
 
     public void makeMove(ChessMove move, String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new MakeMoveCommand(playerInfo.gameID(), move, authToken);
+            MakeMoveCommand cmd = new MakeMoveCommand(playerInfo.gameID(), move, authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         } catch (IOException ex) {
             throw new ServerException(500, ex.getMessage());
@@ -93,7 +93,7 @@ public class WebsocketFacade extends Endpoint {
 
     public void resign(String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new ResignCommand(playerInfo.gameID(), authToken);
+            ResignCommand cmd = new ResignCommand(playerInfo.gameID(), authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
         } catch (IOException ex) {
             throw new ServerException(500, ex.getMessage());
@@ -102,7 +102,7 @@ public class WebsocketFacade extends Endpoint {
 
     public void leave(String authToken) throws ServerException {
         try {
-            UserGameCommand cmd = new LeaveCommand(playerInfo.gameID(), authToken);
+            LeaveCommand cmd = new LeaveCommand(playerInfo.gameID(), authToken);
             this.session.getBasicRemote().sendText(new Gson().toJson(cmd));
             this.session.close();
         } catch (IOException ex) {
